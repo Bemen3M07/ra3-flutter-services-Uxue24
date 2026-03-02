@@ -1,3 +1,355 @@
+
+ra3-flutter-services-Uxue24-main
+
+modelos
+
+servicios
+
+provider (estado)
+
+vistas
+
+La aplicación incluye tres funcionalidades principales:
+
+Consulta de coches desde una API
+
+Obtención de chistes aleatorios
+
+Consulta de información de transporte (TMB)
+
+Estructura del proyecto
+lib/
+ ├─ main.dart
+ ├─ models/
+ ├─ services/
+ ├─ providers/
+ └─ views/
+
+Además se incluyen las carpetas estándar de Flutter:
+
+android/
+web/
+test/
+main.dart
+
+Archivo de entrada de la aplicación.
+
+Clases
+MyApp
+
+Es el widget raíz de la aplicación.
+
+Responsabilidades:
+
+Configurar la app con MaterialApp
+
+Establecer HomeScreen como pantalla principal
+
+models
+
+Contiene los modelos de datos que representan la información recibida desde las APIs.
+
+car_model.dart
+Clase: CarModel
+
+Representa un coche.
+
+Propiedades:
+
+make → marca
+
+model → modelo
+
+year → año
+
+Métodos:
+
+CarModel.fromJson(Map<String, dynamic>)
+
+toJson()
+
+joke_model.dart
+Clase: JokeModel
+
+Representa un chiste.
+
+Propiedades:
+
+setup → introducción
+
+punchline → remate
+
+Métodos:
+
+JokeModel.fromJson(Map<String, dynamic>)
+
+line_model.dart
+Clase: LineModel
+
+Representa una línea de transporte.
+
+Propiedades:
+
+name → nombre de la línea
+
+description → descripción
+
+Métodos:
+
+LineModel.fromJson(Map<String, dynamic>)
+
+route_model.dart
+Clase: RouteModel
+
+Representa una ruta de transporte completa.
+
+Propiedades:
+
+steps → lista de pasos de la ruta
+
+Métodos:
+
+RouteModel.fromJson(Map<String, dynamic>)
+
+Este modelo se construye a partir de la estructura plan → itineraries → legs devuelta por la API.
+
+stop_arrival_model.dart
+Clase: StopArrivalModel
+
+Representa la información de una parada.
+
+Propiedades:
+
+stopName → nombre de la parada
+
+arrivals → lista de llegadas
+
+Métodos:
+
+StopArrivalModel.fromJson(Map<String, dynamic>)
+
+Clase: BusArrival
+
+Modelo auxiliar que representa una llegada de autobús concreta (se construye dentro del mismo archivo).
+
+services
+
+Contiene todas las clases encargadas de comunicarse con APIs externas.
+
+car_service.dart
+Clase: CarService
+
+Responsable de obtener coches desde una API externa (RapidAPI).
+
+Propiedades:
+
+_url
+
+_apiKey
+
+_host
+
+Métodos:
+
+Future<List<CarModel>> getCars()
+
+Convierte la respuesta en una lista de CarModel.
+
+joke_service.dart
+Clase: JokeService
+
+Obtiene una lista de chistes desde una API pública y devuelve uno aleatorio.
+
+Métodos:
+
+Future<JokeModel> getRandomJoke()
+
+tmb_service.dart
+Clase: TmbService
+
+Servicio que se comunica con la API de TMB.
+
+Propiedades:
+
+_appId
+
+_appKey
+
+Métodos principales:
+
+Future<StopArrivalModel> getStopInfo(String stopCode)
+
+Métodos adicionales para obtener líneas y rutas (según la API de TMB).
+
+Este servicio devuelve datos que luego se transforman en:
+
+StopArrivalModel
+
+LineModel
+
+RouteModel
+
+providers
+
+Contiene la gestión de estado usando Provider.
+
+car_provider.dart
+Clase: CarProvider
+
+Extiende ChangeNotifier.
+
+Propiedades privadas:
+
+_cars → lista de coches
+
+_isLoading → indica si se están cargando los datos
+
+Getters:
+
+cars
+
+isLoading
+
+Métodos:
+
+Future<void> fetchCars()
+
+Este método:
+
+Activa el estado de carga
+
+Llama a CarService
+
+Actualiza la lista
+
+Notifica a los widgets
+
+views
+
+Contiene todas las pantallas de la aplicación.
+
+car_page.dart
+Clase: CarPage
+
+Pantalla para mostrar la lista de coches.
+
+Características:
+
+Es un StatefulWidget
+
+Usa Provider<CarProvider>
+
+En initState() llama a fetchCars()
+
+Se encarga de:
+
+Mostrar estado de carga
+
+Mostrar la lista de coches
+
+home_screen.dart
+Clase: HomeScreen
+
+Pantalla principal de la aplicación.
+
+Responsabilidades:
+
+Introducir un código de parada
+
+Consultar la API de TMB
+
+Mostrar información de:
+
+llegadas a una parada
+
+rutas de transporte
+
+Propiedades principales:
+
+TmbService _service
+
+TextEditingController _controller
+
+StopArrivalModel? stopData
+
+RouteModel? route
+
+joke_page.dart
+Clase: JokePage
+
+Pantalla que muestra un chiste aleatorio.
+
+Propiedades:
+
+JokeModel? joke
+
+Métodos:
+
+loadJoke()
+
+Cada vez que se pulsa el botón se llama a JokeService y se actualiza el estado con setState.
+
+test
+
+Contiene pruebas unitarias.
+
+car_service_test.dart
+
+Pruebas relacionadas con el servicio de coches.
+
+widget_test.dart
+
+Prueba básica de widgets generada por Flutter.
+
+Arquitectura del proyecto
+
+El proyecto sigue una arquitectura simple por capas:
+
+Views  →  Provider  →  Services  →  API
+           ↓
+         Models
+
+Las views no acceden directamente a las APIs.
+
+Los services se encargan únicamente de la comunicación HTTP.
+
+Los models representan los datos.
+
+El provider gestiona el estado de los coches.
+
+Dependencias principales
+
+http → peticiones HTTP
+
+provider → gestión de estado
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/urLBeyZM)
 # flutter-empty-2026
 
@@ -151,3 +503,8 @@ flutter build apk
 ```
 
 Si totes les comandes passen, el teu flux de plantilla neta és correcte.
+
+
+
+
+
